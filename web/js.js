@@ -1,71 +1,22 @@
-var currentQueue = []
+
 var lastLookupTimeMillis = 0
 var numLookups = 0
 var lookupRateLimitTimeout;
 
-function popItem(){
-	$.ajax({
-		url: "queue/QueueAPI.py",
-		method: "POST",
-		data: {action: "pop"},
-		success: handleQueueAPIResponse
-	});
+function onQueueChanged(newQueue){
+	// Redraw the page when the Queue changes. 
+	console.log("redrawing")
+	nowPlayingItem = newQueue.shift()
+	drawQueue(newQueue)
+	drawNowPlaying(nowPlayingItem)
 }
 
-function clearQueue(){
-	$.ajax({
-		url: "queue/QueueAPI.py",
-		method: "POST",
-		data: {action: "clear"},
-		success: handleQueueAPIResponse
-	});
-}
-
-function insertItem(item){
-	$.ajax({
-		url: "queue/QueueAPI.py",
-		method: "POST",
-		data: {action: "insert", item: item},
-		success: handleQueueAPIResponse
-	});
-}
-
-function removeItem(index){
-	$.ajax({
-		url: "queue/QueueAPI.py",
-		method: "POST",
-		data: {action: "remove", index: index},
-		success: handleQueueAPIResponse
-	});
-}
-
-function pollForUpdates(){
-		$.ajax({
-		url: "queue/QueueAPI.py",
-		method: "GET",
-		success: handleQueueAPIResponse
-	});
-}
-
-function handleQueueAPIResponse(data){
-	response = $.parseJSON(data)
-	if (response["success"]) {
-		if (response["queue"].toString() !== currentQueue) {
-			console.log("redrawing")
-			currentQueue = response["queue"].toString()
-			nowPlayingItem = response["queue"].shift()
-			drawQueue(response["queue"])
-			drawNowPlaying(nowPlayingItem)
-		}
-	}
-}
-
-function drawNowPlaying(now_playing_data){
-	if (now_playing_data == undefined) {
+function drawNowPlaying(nowPlayingURI){
+	if (nowPlayingURI == undefined) {
 		$(".now-playing").hide()
 		$("#not-playing-message").show()
 	}else{
-		getItemForUri(now_playing_data, function(nowPlayingItem){
+		getItemForUri(nowPlayingURI, function(nowPlayingItem){
 			$("#not-playing-message").hide()
 			$("#now-playing-title").html(titleForItem(nowPlayingItem))
 			$("#now-playing-artist").html(artistsForItem(nowPlayingItem))
@@ -73,31 +24,6 @@ function drawNowPlaying(now_playing_data){
 			$(".now-playing").show()
 		});
 	}
-}
-
-
-function handleSearchResultClick(event){
-	$(".queue-button").remove()
-	resultData = $(event.currentTarget).data("result-data")
-
-	albumArtURL = getAlbumArtURLForTrack(resultData)
-	queueButtonRow = $("<tr class='queue-button'><td colspan='2'><img class='album-art' src='" + albumArtURL + "' /></td></tr>")
-
-	queueButton = $("<input type='button' class='btn btn-large btn-primary queue-button' value='Queue'>")
-	queueButton.data("target-uri", getURIForItem(resultData))
-	queueButton.click(queueButtonClick)
-
-	queueButtonRow.children("td").append(queueButton)
-	$(event.currentTarget).after(queueButtonRow);
-}
-
-
-function queueButtonClick(event){
-	trackURI = $(event.currentTarget).data("target-uri")
-	insertItem(trackURI)
-	$(".queue-button").remove()
-	$("#search-text").val("")
-	searchSpotifyForText()
 }
 
 function drawQueue(queueList){
@@ -127,15 +53,6 @@ function drawQueue(queueList){
 	})
 }
 
-function queueItemDeleteClick(event){
-	removeItem($(event.currentTarget).data("item-position"));
-}
-
-function queueItemDeleteToggle(event){
-	$(event.currentTarget).children(".position").toggle();
-	$(event.currentTarget).children(".queue-delete").toggle();
-}
-
 function drawSearchResults(results){
 	$("#search-results").empty()
 	$("#search-results").append("<tr class='header'><th>Title</th><th>Artist</th></tr>")
@@ -150,18 +67,44 @@ function drawSearchResults(results){
 	$(".search-result").click(handleSearchResultClick)
 }
 
-function searchSpotifyForText(){
-	numLookups++
+function handleSearchResultClick(event){
+	$(".queue-button").remove()
+	resultData = $(event.currentTarget).data("result-data")
 
-	console.log("making request " + numLookups)
-	textValue = $("#search-text").val()
+	albumArtURL = getAlbumArtURLForTrack(resultData)
+	queueButtonRow = $("<tr class='queue-button'><td colspan='2'><img class='album-art' src='" + albumArtURL + "' /></td></tr>")
 
-	if (textValue === ""){
-		$("#search-results").hide()
-	} else {
-		$("#search-results").show()
-		searchSpotifyForTrack(textValue)
-	}
+	queueButton = $("<input type='button' class='btn btn-large btn-primary queue-button' value='Queue'>")
+	queueButton.data("target-uri", getURIForItem(resultData))
+	queueButton.click(queueButtonClick)
+
+	queueButtonRow.children("td").append(queueButton)
+	$(event.currentTarget).after(queueButtonRow);
+}
+
+
+function queueButtonClick(event){
+	trackURI = $(event.currentTarget).data("target-uri")
+	insertItemIntoQueue(trackURI)
+	$(".queue-button").remove()
+	$("#search-text").val("")
+	searchSpotifyForText()
+}
+
+
+
+function queueItemDeleteClick(event){
+	removeItem($(event.currentTarget).data("item-position"));
+}
+
+function queueItemDeleteToggle(event){
+	$(event.currentTarget).children(".position").toggle();
+	$(event.currentTarget).children(".queue-delete").toggle();
+}
+
+function onSearchKeypress(){
+	console.log("keypress")
+	searchSpotifyForTextRateLimited()
 }
 
 function onSearchSubmit(event){
@@ -180,9 +123,18 @@ function searchSpotifyForTextRateLimited(){
 	}
 }
 
-function onSearchKeypress(){
-	console.log("keypress")
-	searchSpotifyForTextRateLimited()
+function searchSpotifyForText(){
+	numLookups++
+
+	console.log("making request " + numLookups)
+	textValue = $("#search-text").val()
+
+	if (textValue === ""){
+		$("#search-results").hide()
+	} else {
+		$("#search-results").show()
+		searchSpotifyForTrack(textValue)
+	}
 }
 
 $().ready(function() {
