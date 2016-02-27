@@ -7,6 +7,8 @@ track_uri_queue = QueueFromFile("queue.txt")
 
 music_player = SpotifyMusicPlayer()
 
+# If the user has specified a username and password as command line arguments,
+# attempt to login with those. Otherwise, attempt to use our remembered credentials.
 if len(sys.argv) >= 3:
 	print "Attempting to login as " + sys.argv[1]
 	login_attempt = music_player.login(sys.argv[1], sys.argv[2])

@@ -6,7 +6,7 @@ import os
 directory = "web/"
 
 # Represents a CGI Capable Web Server listening on port, serving files from directory, with a cgi bin in
-# the scripts folder of that directory
+# the queue folder of that directory
 class CGIWebServer():
 	def __init__(self, port):
 		self.port = port
