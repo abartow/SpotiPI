@@ -1,0 +1,4 @@
+*.pyc
+*.key
+queue.txt
+tmp/

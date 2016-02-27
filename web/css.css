@@ -1,0 +1,71 @@
+tr.search-result:hover{
+	background-color: #e5e5e5 !important;
+}
+
+tr.queue-item:hover{
+	background-color: #e5e5e5 !important;
+}
+
+tr{
+	text-align: left;
+}
+
+tr.queue-button{
+	text-align: center
+}
+
+img.album-art{
+	width:100px;
+	height:100px;
+	margin-right: 25px;
+}
+
+input.queue-button{
+	width: 200px;
+    margin-left: 25px;
+    height: 50px;
+}
+
+#now-playing-album-art{
+	width:150px;
+	display: inline-block;
+	margin: 10px;
+}
+
+#now-playing-info-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#not-playing-message {
+    line-height: 30px;
+    height: 30px;
+    margin: 0;
+    padding-top: 7.5px;
+    font-size: 35px;
+    color: #777;
+}
+
+#now-playing-title {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#now-playing-artist {
+    font-style: italic;
+    font-size: 20px;
+}
+
+#search-text{
+	width: 50%;
+    margin: 0 3%;
+}
+
+td.position{
+	width: 42px;
+}
+
+input.queue-delete{
+	margin: 3px 8px;
+	margin-right: 0px;
+}
