@@ -69,3 +69,21 @@ input.queue-delete{
 	margin: 3px 8px;
 	margin-right: 0px;
 }
+
+b#fallback-playlist-name {
+    margin: 5px;
+    font-size: 12px;
+}
+
+p#fallback-playlist-message {
+    margin: 0 0 0 0px;
+}
+
+input#fallback-playlist-search {
+    color: #000;
+    margin-right:10px;
+}
+/* This looks much nicer for our labels, but we may have to target it later. Mostly because we put text boxes in our labels. */
+span.label{
+    display: inline-block !important;
+}

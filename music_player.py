@@ -61,27 +61,21 @@ class SpotifyMusicPlayer():
 	# If no tracks are on the queue, waits until there are some.
 	# You must be logged in before the server can be started.
 	# Blocks forever.
-	def start_playback_loop(self, track_uri_queue): 
+	def start_playback_loop(self, music_queue): 
 		if not self.is_logged_in:
 			raise RuntimeError("start_playback() called without user logged in.")
 
-		print "Starting playback loop with queue: " + track_uri_queue.__str__()
+		print "Starting playback loop with queue: " + music_queue.__str__()
+		
 		while True:
-			if len(track_uri_queue) == 0:
-				print "No tracks currently queued."
-				track_uri_queue.wait_for_next_change()
-			else:
-				track_uri = track_uri_queue.peek()
-				self.play_track(track_uri)
-				print "Removing from queue" + track_uri_queue.pop().__str__()
+			self.play_track(music_queue.get_next_track(self.session))
+			music_queue.current_track_complete()
 
 
 	# Plays back a given Spotify track.
 	# Blocks until track playback is complete.
-	def play_track(self, track_uri):
+	def play_track(self, track):
 		playback_block = threading.Event()
-
-		track = self.session.get_track(track_uri).load()
 
 		# Create and register an event listener so we know when track playback is complete.
 		def on_end_of_track(session):
@@ -93,6 +87,7 @@ class SpotifyMusicPlayer():
 		self.session.player.play()
 
 		playback_block.wait()
+
 
 def test():
 	player = SpotifyMusicPlayer()
