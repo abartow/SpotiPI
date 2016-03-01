@@ -76,17 +76,23 @@
 	      			<small id="now-playing-artist" class="now-playing"></small>
 	      		</div>
 	      	</div>
-	      	</div>
-	      	<div class="col-md-5">
-		      	<div class="page-header">
-		      		<h1>Up Next</h1>
-		      	</div>
+	      </div>
+	      <div class="col-md-5">
+		      <div class="page-header">
+		        <h1>Up Next</h1>
+		      </div>
 		  		<table class="table table-striped" id="queue"></table>
 		  		<p id="queue-empty-message" class="lead">There are currently no songs queued.</p>
 		  		<p>
-					<input type="button" id="clear-button" class="btn btn-danger" value="Clear Queue" />
-				</p>
-			</div>
+					 <input type="button" id="clear-button" class="btn btn-danger" value="Clear Queue" />
+          </p>
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <p id="fallback-playlist-message">Playing on shuffle from <span class="label label-primary"><b id="fallback-playlist-name">None</b><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></span> when no other songs are queued.</p>
+            </div>
+          </div>
+        </div>
 		</div>
       </div>
     </div><!-- /.container -->
