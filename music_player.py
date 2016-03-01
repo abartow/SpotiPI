@@ -1,5 +1,6 @@
 import spotify
 import threading
+import platform
 
 LOGIN_TIMEOUT = 10
 
@@ -13,8 +14,12 @@ class SpotifyMusicPlayer():
 		loop = spotify.EventLoop(self.session)
 		loop.start()
 
-		# Connect to the PortAudio sink, because that should work on Mac/Linux
-		audio = spotify.PortAudioSink(self.session)
+		# Connect to the AlsaAudio Sink, which works best for the Pi if you're on Linux,
+		# but otherwise connect to the more versatile PortAudio sink
+		if platform.system() == "Linux":
+			audio = spotify.AlsaSink(self.session)
+		else:
+			audio = spotify.PortAudioSink(self.session)
 
 	# Logs the user in with the credentials specified. 
 	# This call blocks until either login is completed successfully or
