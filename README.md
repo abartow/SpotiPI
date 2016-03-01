@@ -21,9 +21,16 @@ SpotiPI depends on [pyspotify](https://github.com/mopidy/pyspotify), which you c
 
     pip install pyspotify
 
+You may have to install pyspotify's dependancies first, which can be done on Raspbian by running:
+
+    sudo apt-get install build-essential python-dev python3-dev libffi-dev
+
 ###Download SpotiPI
 
 You then need to download SpotiPI, generally by cloning this repo. 
+
+	git clone https://github.com/abartow/SpotiPI.git
+
 
 ###Request and Download a libspotify API key
 
