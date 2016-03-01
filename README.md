@@ -29,9 +29,15 @@ You can also install pyspotify from APT with the command:
 
     sudo apt-get install python-spotify
 
-You may also need to install the pyaudio library:
+You may also need to install the pyaudio or alsaaudio library:
+
+For pyaudio:
 
     sudo apt-get install python-pyaudio
+
+For alsaaudio:
+
+    sudo apt-get install python-alsaaudio
 
 ###Download SpotiPI
 
