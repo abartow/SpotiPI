@@ -12,6 +12,8 @@
 
     <title>SpotiPI Communal Jukebox</title>
 	<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="js.js"></script>
 	<script src="queue-api.js"></script>
 	<script src="spotify-api.js"></script>
@@ -57,7 +59,7 @@
 			<form id="search-form">
 				<input type="text" class="input-lg" placeholder="Search Spotify" id="search-text" />
 				<input type="submit" class="btn-lg btn-primary" id="search-button" value="Search" />
-			</fieldset>
+			</form>
 		</p>
 		<p>
 			<table class="table table-striped" id="search-results"></table>
@@ -86,10 +88,10 @@
 		  		<p>
 					 <input type="button" id="clear-button" class="btn btn-danger" value="Clear Queue" />
           </p>
-
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <p id="fallback-playlist-message">Playing on shuffle from <span class="label label-primary"><b id="fallback-playlist-name">None</b><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></span> when no other songs are queued.</p>
+            <div class="page-header">
+              <h1>Auto-DJ</h1>
+            </div>
+              <p class="lead" id="fallback-playlist-message">Playing on shuffle from <span id="fallback-playlist-tag" class="label label-primary"><input id="fallback-playlist-search" type="text" placeholder="Search Playlists" /><b id="fallback-playlist-name">None</b><span id="fallback-playlist-icon" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></span> when no other songs are queued.</p>
             </div>
           </div>
         </div>
@@ -101,7 +103,6 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </body>
 </html>

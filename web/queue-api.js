@@ -3,6 +3,7 @@
 * the js.js file which we currently use to draw the page. */
 
 var currentQueue = []
+var currentFallbackPlaylist = "NONE"
 
 function popItem(){
 	$.ajax({
@@ -41,9 +42,27 @@ function removeItem(index){
 }
 
 function pollForUpdates(){
-		$.ajax({
+	$.ajax({
 		url: "queue/QueueAPI.py",
 		method: "GET",
+		success: handleQueueAPIResponse
+	});
+}
+
+function setFallbackPlaylist(playlistURI) {
+	$.ajax({
+		url: "queue/QueueAPI.py",
+		method: "POST",
+		data: {action: "set_fallback_playlist", playlist_uri: playlistURI},
+		success: handleQueueAPIResponse
+	});
+}
+
+function clearFallbackPlaylist() {
+	$.ajax({
+		url: "queue/QueueAPI.py",
+		method: "POST",
+		data: {action: "clear_fallback_playlist"},
 		success: handleQueueAPIResponse
 	});
 }
@@ -54,6 +73,11 @@ function handleQueueAPIResponse(data){
 		if (response["queue"].toString() !== currentQueue) {
 			currentQueue = response["queue"].toString()
 			onQueueChanged(response["queue"].slice());
+		}
+
+		if (response["fallback_playlist"] !== currentFallbackPlaylist) {
+			currentFallbackPlaylist = response["fallback_playlist"]
+			onFallbackPlaylistChanged(currentFallbackPlaylist)
 		}
 	}
 }

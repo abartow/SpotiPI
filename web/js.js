@@ -11,6 +11,26 @@ function onQueueChanged(newQueue){
 	drawNowPlaying(nowPlayingItem)
 }
 
+function onFallbackPlaylistChanged(playlistURI) {
+	console.log("playlist changed")
+	drawFallbackPlaylist(playlistURI)
+}
+
+function drawFallbackPlaylist(playlistURI) {
+	$("#fallback-playlist-name").show()
+	$("#fallback-playlist-search").hide()
+	$("#fallback-playlist-icon").removeClass("glyphicon-remove");
+	$("#fallback-playlist-icon").addClass("glyphicon-pencil");
+
+	if (playlistURI == null){
+		$("#fallback-playlist-name").text("None")
+	} else {
+		getNameOfPlaylist(playlistURI, function(playlistName) {
+			$("#fallback-playlist-name").text(playlistName)
+		})
+	}
+}
+
 function drawNowPlaying(nowPlayingURI){
 	if (nowPlayingURI == undefined) {
 		$(".now-playing").hide()
@@ -91,8 +111,6 @@ function queueButtonClick(event){
 	searchSpotifyForText()
 }
 
-
-
 function queueItemDeleteClick(event){
 	removeItem($(event.currentTarget).data("item-position"));
 }
@@ -110,6 +128,51 @@ function onSearchKeypress(){
 function onSearchSubmit(event){
 	searchSpotifyForText()
 	event.preventDefault()
+}
+
+function onFallbackPlaylistClick(){
+	$("#fallback-playlist-name").toggle()
+	$("#fallback-playlist-search").toggle()
+
+	if ($("#fallback-playlist-icon").hasClass("glyphicon-pencil")) {
+		$("#fallback-playlist-icon").addClass("glyphicon-remove");
+		$("#fallback-playlist-icon").removeClass("glyphicon-pencil");
+	} else {
+		$("#fallback-playlist-icon").removeClass("glyphicon-remove");
+		$("#fallback-playlist-icon").addClass("glyphicon-pencil");
+	}
+}
+
+function fallbackPlaylistAutocomplete(request, responseCallback){
+	searchSpotifyForPlaylist(request.term, function(playlistArray) {
+		playlistAutocompleteResult = [{label: "None", value: null}]
+		$.each(playlistArray, function(index, playlistItem){
+			playlistAutocompleteResult.push({label: titleForItem(playlistItem), value: getURIForItem(playlistItem)});
+		})
+		responseCallback(playlistAutocompleteResult)
+	});
+}
+
+function onFallbackPlaylistSelect(event, ui) {
+	event.preventDefault()
+
+	if (ui.item.value == "None") {
+		clearFallbackPlaylist();
+	} else {
+		setFallbackPlaylist(ui.item.value)
+	}
+
+	/* Revert the UI State to give some immediate feedback */
+
+	$("#fallback-playlist-name").show()
+	$("#fallback-playlist-search").hide()
+	$("#fallback-playlist-icon").removeClass("glyphicon-remove");
+	$("#fallback-playlist-icon").addClass("glyphicon-pencil");
+
+}
+
+function cancelEventPropigation(event){
+	event.stopPropagation()
 }
 
 function searchSpotifyForTextRateLimited(){
@@ -137,12 +200,19 @@ function searchSpotifyForText(){
 	}
 }
 
+
 $().ready(function() {
 	pollForUpdates();
 	$("#clear-button").click(clearQueue)
 	$("#pop-button").click(popItem)
 	$("#search-form").submit(onSearchSubmit)
 	$("#search-form").keyup(onSearchKeypress)
+	$("#fallback-playlist-search").click(cancelEventPropigation)
+	$("#fallback-playlist-tag").click(onFallbackPlaylistClick)
+		$("#fallback-playlist-search").autocomplete({
+		source: fallbackPlaylistAutocomplete,
+		select: onFallbackPlaylistSelect
+	})
 
 	setInterval(pollForUpdates, 10000)
 })
