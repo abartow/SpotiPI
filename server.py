@@ -1,10 +1,9 @@
 import sys
 from web_server import CGIWebServer
 from music_player import SpotifyMusicPlayer
-from lib.queue_file import QueueFromFile
+from lib.music_queue import MusicQueue
 
-track_uri_queue = QueueFromFile("queue.txt")
-
+music_queue = MusicQueue("queue.txt")
 music_player = SpotifyMusicPlayer()
 
 # If the user has specified a username and password as command line arguments,
@@ -23,4 +22,4 @@ if not login_attempt:
 web_server = CGIWebServer(8000)
 web_server.start()
 
-music_player.start_playback_loop(track_uri_queue)
+music_player.start_playback_loop(music_queue)

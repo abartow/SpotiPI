@@ -73,6 +73,7 @@ class MusicQueue():
 	
 	# Clear the queue of manually queued songs, including the current song.
 	def clear(self):
+		self.load_self_from_disk()
 		self.data["queue"] = []
 		self.write_self_to_file()
 	
