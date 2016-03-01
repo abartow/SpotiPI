@@ -11,12 +11,12 @@ SpotiPI allows users to collaboratively control the songs that are going to be p
 
 In order to use SpotiPI, you must:
 
- 1. Have the pyspotify dependency installed.
+ 1. Have the pyspotify and pyaudio dependencies installed.
  2. Download a copy of SpotiPI to the target device
  3. Download a libspotify API key from [Spotify's website](https://devaccount.spotify.com/my-account/keys/)
  4. Start the SpotiPI server with a pair of Spotify Premium credentials
 
-###Install pyspotify
+###Install dependencies
 SpotiPI depends on [pyspotify](https://github.com/mopidy/pyspotify), which you can install by running:
 
     pip install pyspotify
@@ -25,11 +25,19 @@ You may have to install pyspotify's dependancies first, which can be done on Ras
 
     sudo apt-get install build-essential python-dev python3-dev libffi-dev
 
+You can also install pyspotify from APT with the command:
+
+    sudo apt-get install python-spotify
+
+You may also need to install the pyaudio library:
+
+    sudo apt-get install python-pyaudio
+
 ###Download SpotiPI
 
 You then need to download SpotiPI, generally by cloning this repo. 
 
-	git clone https://github.com/abartow/SpotiPI.git
+    git clone https://github.com/abartow/SpotiPI.git
 
 
 ###Request and Download a libspotify API key
