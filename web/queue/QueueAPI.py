@@ -22,7 +22,13 @@ try:
 		elif action == "remove":
 			index = int(request["index"].value)
 			music_queue.remove(index)
+		elif action == "clear_fallback_playlist":
+			music_queue.clear_fallback_playlist()
+		elif action == "set_fallback_playlist":
+			playlist_uri = request["playlist_uri"].value
+			music_queue.set_fallback_playlist(playlist_uri)
 
+	response["fallback_playlist"] = music_queue.get_fallback_playlist()
 	response["queue"] = music_queue.get_queue_list()
 	response["success"] = True
 except Exception as e:

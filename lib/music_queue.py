@@ -68,7 +68,8 @@ class MusicQueue():
 	# Removes the currently playing track from the queue.
 	def current_track_complete(self):
 		self.load_self_from_disk()
-		self.data["queue"].pop(0)
+		# If the queue was emptied before the current track started it might be empty
+		if len(self.data["queue"]) > 0: self.data["queue"].pop(0)
 		self.write_self_to_file()
 	
 	# Clear the queue of manually queued songs, including the current song.
@@ -88,6 +89,14 @@ class MusicQueue():
 		self.load_self_from_disk()
 		self.data["fallback_playlist"] = playlist_uri
 		self.write_self_to_file()
+
+	# Returns the URI of the current fallback playlist, or a None if no playlist is set.
+	def get_fallback_playlist(self):
+		self.load_self_from_disk()
+		if self.data["fallback_playlist"] == "":
+			return None
+		else:
+			return self.data["fallback_playlist"]
 
 	# Unset the playlist of songs to be chosen when no songs are manually queued.
 	def clear_fallback_playlist(self):
@@ -118,7 +127,7 @@ class MusicQueue():
 			playlist.load()
 			random_track = random.choice(playlist.tracks)
 			random_track.load()
-			self.data["queue"].append(random_track.link.uri)
+			self.insert(random_track.link.uri)
 			return random_track.load()
 		else:
 			self.wait_for_next_change()
