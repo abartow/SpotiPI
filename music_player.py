@@ -66,11 +66,14 @@ class SpotifyMusicPlayer():
 			raise RuntimeError("start_playback() called without user logged in.")
 
 		print "Starting playback loop with queue: " + music_queue.__str__()
-		
-		while True:
-			self.play_track(music_queue.get_next_track(self.session))
-			music_queue.current_track_complete()
 
+		def playbackLoop():
+			while True:
+				self.play_track(music_queue.get_next_track(self.session))
+				music_queue.current_track_complete()
+
+		playbackThread = threading.Thread(target=playbackLoop)
+		playbackThread.start()
 
 	# Plays back a given Spotify track.
 	# Blocks until track playback is complete.
